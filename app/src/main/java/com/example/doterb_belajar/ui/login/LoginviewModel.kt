@@ -1,24 +1,22 @@
 package com.example.doterb_belajar.ui.login
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.doterb_belajar.R
 import com.example.doterb_belajar.model.Event
 import com.example.doterb_belajar.model.LoginResponse
 import com.example.doterb_belajar.model.Result
+import com.example.mymoviddb.core.utils.preference.LoginState
+import com.example.mymoviddb.core.utils.preference.Preference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginviewModel @Inject constructor(
-    private val app: Application,
+    private val userPreference: Preference,
     private val loginRepository: LoginRepository
 ) :
-    AndroidViewModel(app) {
+    ViewModel() {
 
     private val _login = MutableLiveData<Result<LoginResponse?>>()
     val loginResult: LiveData<Result<LoginResponse?>> = _login
@@ -38,6 +36,12 @@ class LoginviewModel @Inject constructor(
             if (password.isBlank()) {
                 _usernameError.value = Event(R.string.error_empty_password)
                 return@launch
+            }
+
+            val result = loginRepository.login(username, password)
+            if (result is Result.Success) {
+                userPreference.setAuthState(LoginState.AS_USER)
+                userPreference.setToken(result.data?.result.toString())
             }
 
             _login.value = loginRepository.login(username, password)

@@ -1,5 +1,7 @@
 package com.example.doterb_belajar.di
 
+import com.example.doterb_belajar.ui.home.HomeRepository
+import com.example.doterb_belajar.ui.home.IHome
 import com.example.doterb_belajar.ui.login.ILogin
 import com.example.doterb_belajar.ui.login.LoginRepository
 import dagger.Binds
@@ -15,4 +17,8 @@ abstract class BelajarProvider {
     @Binds
     @ViewModelScoped
     abstract fun bindsLoginRepository(loginRepo: LoginRepository): ILogin
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindsHomeRepository(homeRepo: HomeRepository): IHome
 }
